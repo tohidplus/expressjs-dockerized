@@ -1,0 +1,32 @@
+version: "3.1"
+services:
+  node:
+    build:
+      context: ..
+      dockerfile: ./docker/node/Dockerfile
+    volumes:
+      - ../src:/usr/src/app
+    ports:
+    - 8085:3000
+  mysql:
+    build: ./mysql
+    ports:
+      - 3385:3306
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nodemvc
+      MYSQL_USER: nodemvcuser
+      MYSQL_PASSWORD: 123456
+    volumes:
+      - ../data/mysql:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8185:80
+    restart: always
+    environment:
+      PMA_ARBITRARY: 1
+    depends_on:
+      - mysql
